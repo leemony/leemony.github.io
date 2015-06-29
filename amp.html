@@ -41,7 +41,7 @@ Apache 2.4
 
 *  修改默认路径：打开 `D:\Apache24\conf\httpd.conf`， 查找替换所有的默认路径`C:/`为`D:/`
 
-*  安装Apache：以管理员权限打开cmd命令行，依次运行如下命令
+*  安装Apache：以管理员权限打开cmd命令行，依次运行命令:
 
 ~~~~
 D:
@@ -54,11 +54,29 @@ PHP 5.5
 
 *  下载安装包，选择 [VC11 x64 Thread Safe ](http://windows.php.net/download/) （VC11线程安全版。`Thread Safe`为安全线程，与Apache搭配环境；`Non Thread Safe`为非安全线程，主要与IIS搭配环境）
 
-*  解压安装包后得到php-5.5.**-Win32-VC11-x64文件夹，重命名为php并将文件夹拷贝至D盘根目录下，得到`D:/php`文件夹
+*  解压安装包后得到`php-5.5.**-Win32-VC11-x64`文件夹，重命名为php并将文件夹拷贝至D盘根目录下，得到`D:/php`文件夹
 
-*  复制D:/php目录下php.ini-production文件，并将复制后的文件重命名为php.ini，修改php.ini文件内容：
+*  复制`D:\php\php.ini-production`，并将复制后的文件重命名为`php.ini`，修改文件，去掉如下语句前的“；”：
+~~~~
+extension_dir = "ext"
 
-    
+
+~~~~
+
+
+
+
+*  Apache中使用PHP，`Apache24\conf\httpd.config`中增加：
+~~~~
+LoadModule php5_module "D:/php/php5apache2_4.dll"
+PHPIniDir "D:/php"
+
+AddType application/x-httpd-php .php .html .htm
+~~~~
+
+
+MySQL
+
 </body>
 </html>
 <!-- markdown end -->
@@ -80,7 +98,7 @@ Apache 2.4 + PHP 5.5 + MySQL</p>
 <ul>
 <li><p>下载：选择 <a href="http://www.apachelounge.com/download/VC11/">httpd-2.4.12-win64-VC11.zip </a> ， 解压安装包后得到Apache24文件夹， 将文件夹拷贝至D盘根目录<code>D:/</code>下（以D盘根目录为安装目录）</p></li>
 <li><p>修改默认路径：打开 <code>D:\Apache24\conf\httpd.conf</code>， 查找替换所有的默认路径<code>C:/</code>为<code>D:/</code></p></li>
-<li><p>安装Apache：以管理员权限打开cmd命令行，依次运行如下命令</p></li>
+<li><p>安装Apache：以管理员权限打开cmd命令行，依次运行命令:</p></li>
 </ul>
 
 <pre><code>D:
@@ -93,9 +111,26 @@ httpd.exe -k start|stop|restart
 
 <ul>
 <li><p>下载安装包，选择 <a href="http://windows.php.net/download/">VC11 x64 Thread Safe </a> （VC11线程安全版。<code>Thread Safe</code>为安全线程，与Apache搭配环境；<code>Non Thread Safe</code>为非安全线程，主要与IIS搭配环境）</p></li>
-<li><p>解压安装包后得到php-5.5.**-Win32-VC11-x64文件夹，重命名为php并将文件夹拷贝至D盘根目录下，得到<code>D:/php</code>文件夹</p></li>
-<li><p>复制D:/php目录下php.ini-production文件，并将复制后的文件重命名为php.ini，修改php.ini文件内容：</p></li>
+<li><p>解压安装包后得到<code>php-5.5.**-Win32-VC11-x64</code>文件夹，重命名为php并将文件夹拷贝至D盘根目录下，得到<code>D:/php</code>文件夹</p></li>
+<li><p>复制<code>D:\php\php.ini-production</code>，并将复制后的文件重命名为<code>php.ini</code>，修改文件，去掉如下语句前的“；”：</p></li>
 </ul>
+
+<pre><code>extension_dir = "ext"
+
+
+</code></pre>
+
+<ul>
+<li>Apache中使用PHP，<code>Apache24\conf\httpd.config</code>中增加：</li>
+</ul>
+
+<pre><code>LoadModule php5_module "D:/php/php5apache2_4.dll"
+PHPIniDir "D:/php"
+
+AddType application/x-httpd-php .php .html .htm
+</code></pre>
+
+<p>MySQL</p>
 
 <p>
 </p>

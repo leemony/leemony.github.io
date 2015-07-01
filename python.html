@@ -26,97 +26,81 @@
 <div id="md" style="display: none;">
 <!-- markdown -->
 <!-- markdown -->
-Windows 7 (64位) 系统下配置Apache 2.4 + PHP 5.5 + MySQL
+##python读写 CSV 文件，读写excel文件
+某天收到需求，需要从数据库内取得数据、处理数据后写入 Excel 工作表中，包括新建工作表跟在原有的工作表的基础上添加数据。在学习了使用 Python 对相应文件的处理之后来分享一下学习成果：
 
-##安装 Apache 2.4
+Python中一般使用 [xlrd](https://pypi.python.org/pypi/xlrd) 库来读取 Excel 文件，使用 [xlwt](https://pypi.python.org/pypi/xlwt) 库来生成 Excel 文件，使用 [xlutils](https://pypi.python.org/pypi/xlutils) 库复制和修改Excel文件。这三个库只支持到 Excel 2003。
 
-下载安装包，选择 [httpd-2.4.12-win64-VC11.zip ](http://www.apachelounge.com/download/VC11/) ， 解压安装包后得到Apache24文件夹， 将文件夹拷贝至D盘根目录下（以D盘根目录为安装目录）
+##xrld
 
-修改默认路径，进入安装目录 D:\Apache24\conf ，打开`httpd.conf`文件， 查找替换所有的默认路径 C:/ 为 D:/
 
-安装Apache，以管理员权限打开cmd命令行，依次运行命令：
+使用的模块包括 `csv`,  `xlwt`, ` xlrd`, `xlutils`.copy 
+
+,
+,
+
+
+从 csv 文件中读取数据，并写入 xls 文件中
+~~~~{python}
+def readFromCSVwriteToXLS(csvfile, xlsfile, sheetname):
+    """
+    read data from csv file (download from hadoop)
+    translate virusname
+    write and save in xls file.
+    """
+    import csv
+    csv_file = file(csvfile,'rb')
+    reader = csv.reader(csv_file)
+    datas = []
+    for line in reader:
+        vn = tmname.avlm2c(line[-1])
+        line[-1] = vn
+        line.append(curldata.safetype(vn)['msg'])
+        datas.append(line)
+    csv_file.close()
+    # get datas.
+    addNewSheet(sheetname, datas, xlsfile)
 ~~~~
-D:
-cd Apache24\bin
-httpd.exe -k install
-httpd.exe -k start|stop|restart
-~~~~
- 
-*  修改网站根目录（按个人需求，此处将网站根目录修改为`D:/www`）
- 
- 进入安装目录 D:\Apache24\conf ，代开配置文件`httpd.conf`，查找
- ~~~~
-DocumentRoot "D:/Apache24/htdocs"
-<Directory "D:/Apache24/htdocs">
-~~~~
-将其中的路径替换为你想要的发布路径
- ~~~~
-DocumentRoot “D:/www”
-<Directory “D:/www”>
-~~~~
- 这样就更改了网站根目录到 D:/www 下
-
-
-
-##安装 PHP 5.5
-
-下载安装包，选择 [VC11 x64 Thread Safe ](http://windows.php.net/download/) （VC11线程安全版。Thread Safe为安全线程，与Apache搭配环境；Non Thread Safe为非安全线程，主要与IIS搭配环境）
-
-将下载的压缩包解压到 D:/php ，  复制该目录下的 php.ini-production ，将复制后的文件重命名为`php.ini`，打开文件修改：
-
-配置扩展库的路径， 查找 extension_dir = "./"，修改为
-~~~~
-extension_dir = “D:\php\ext”
-~~~~
-添加扩展，去掉如下语句前的分号
-~~~~
-extension=PHP_MySQL.dll    ;配置MySQL模块
-extension=PHP_mysqli.dll
-~~~~
-
-*  需要添加扩展则去掉相应 extension 语句前的分号，然后重新启动Apache
-
-
-
-##配置Apache加载PHP
-
-打开Apached的安装目录，D:\Apache24\conf\extra，新建一个名为`httpd-php5.conf`的文本文件，打开添加以下内容：
-~~~~
-LoadModule php5_module "D:\php\php5apache2_2.dll"
-AddType application/x-httpd-php .php
-AddType application/x-httpd-php-source .phps
-DirectoryIndex index.php
-PHPIniDir "D:\php"
-~~~~
-打开D:\Apache24\conf\httpd.conf，在文件末尾添加一行：
-~~~~
-Include conf/extra/httpd-php5.conf
-~~~~
-
-重启Apache服务，打开目录Apache24\htdocs，删除文件：index.html，新建文件：index.php，输入内容：
-~~~~{php}
-<?php phpinfo(); ?>
-~~~~
-
-在浏览器地址栏输入localhost，如果显示了PHP信息则配置成功。
-
-* Apache服务开启|重启|关闭
- ~~~~
-net start|restart|stop Apache2.4
-~~~~
-
-
-
-##MySQL
-
-
 <!-- markdown end -->
-
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
 <!-- content -->
+<!-- markdown -->
 
+<h2 id="pythoncsvexcel">python读写 CSV 文件，读写excel文件</h2>
+
+<p>某天收到需求，需要从数据库内取得数据、处理数据后写入 Excel 工作表中，包括新建工作表跟在原有的工作表的基础上添加数据。在学习了使用 Python 对相应文件的处理之后来分享一下学习成果：</p>
+
+<p>Python中一般使用 <a href="https://pypi.python.org/pypi/xlrd">xlrd</a> 库来读取 Excel 文件，使用 <a href="https://pypi.python.org/pypi/xlwt">xlwt</a> 库来生成 Excel 文件，使用 <a href="https://pypi.python.org/pypi/xlutils">xlutils</a> 库复制和修改Excel文件。这三个库只支持到 Excel 2003。</p>
+
+<h2 id="xrld">xrld</h2>
+
+<p>使用的模块包括 <code>csv</code>,  <code>xlwt</code>, <code>xlrd</code>, <code>xlutils</code>.copy </p>
+
+<p>,
+,</p>
+
+<p>从 csv 文件中读取数据，并写入 xls 文件中
+</p><pre class=" language-python"><code class=" language-python"><span class="token keyword">def</span> readFromCSVwriteToXLS<span class="token punctuation">(</span>csvfile<span class="token punctuation">,</span> xlsfile<span class="token punctuation">,</span> sheetname<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token string">""</span>"
+    read data <span class="token keyword">from</span> csv file <span class="token punctuation">(</span>download <span class="token keyword">from</span> hadoop<span class="token punctuation">)</span>
+    translate virusname
+    write <span class="token operator">and</span> save <span class="token keyword">in</span> xls file<span class="token punctuation">.</span>
+    <span class="token string">""</span>"
+    <span class="token keyword">import</span> csv
+    csvfile <span class="token operator">=</span> file<span class="token punctuation">(</span>csvfile<span class="token punctuation">,</span><span class="token string">'rb'</span><span class="token punctuation">)</span>
+    reader <span class="token operator">=</span> csv<span class="token punctuation">.</span>reader<span class="token punctuation">(</span>csvfile<span class="token punctuation">)</span>
+    datas <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token keyword">for</span> line <span class="token keyword">in</span> reader<span class="token punctuation">:</span>
+        vn <span class="token operator">=</span> tmname<span class="token punctuation">.</span>avlm2c<span class="token punctuation">(</span>line<span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+        line<span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> vn
+        line<span class="token punctuation">.</span>append<span class="token punctuation">(</span>curldata<span class="token punctuation">.</span>safetype<span class="token punctuation">(</span>vn<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token string">'msg'</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+        datas<span class="token punctuation">.</span>append<span class="token punctuation">(</span>line<span class="token punctuation">)</span>
+    csv_file<span class="token punctuation">.</span>close<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token comment" spellcheck="true"># get datas.
+</span>    addNewSheet<span class="token punctuation">(</span>sheetname<span class="token punctuation">,</span> datas<span class="token punctuation">,</span> xlsfile<span class="token punctuation">)</span>
+</code></pre><!-- markdown end --><p></p>
 <!-- content end -->
 </div>
 <br>

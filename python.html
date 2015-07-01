@@ -1,0 +1,190 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="Keywords" content="blog"/>
+    <meta name="Description" content="blog"/>
+    <title>Simple</title>
+    <link rel="shortcut icon" href="/static/favicon.png"/>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<body>
+<div class="main">
+    <div class="header">
+    	<ul id="pages">
+            <li><a href="/">home</a></li>
+            <li><a href="/#/tags">tags</a></li>
+            <li><a href="/#/archive">archive</a></li>
+    	</ul>
+    </div>
+	<div class="wrap-header">
+	<h1>
+    <a href="/" id="title"></a>
+	</h1>
+	</div>
+<div id="md" style="display: none;">
+<!-- markdown -->
+<!-- markdown -->
+Windows 7 (64位) 系统下配置Apache 2.4 + PHP 5.5 + MySQL
+
+##安装 Apache 2.4
+
+下载安装包，选择 [httpd-2.4.12-win64-VC11.zip ](http://www.apachelounge.com/download/VC11/) ， 解压安装包后得到Apache24文件夹， 将文件夹拷贝至D盘根目录下（以D盘根目录为安装目录）
+
+修改默认路径，进入安装目录 D:\Apache24\conf ，打开`httpd.conf`文件， 查找替换所有的默认路径 C:/ 为 D:/
+
+安装Apache，以管理员权限打开cmd命令行，依次运行命令：
+~~~~
+D:
+cd Apache24\bin
+httpd.exe -k install
+httpd.exe -k start|stop|restart
+~~~~
+ 
+*  修改网站根目录（按个人需求，此处将网站根目录修改为`D:/www`）
+ 
+ 进入安装目录 D:\Apache24\conf ，代开配置文件`httpd.conf`，查找
+ ~~~~
+DocumentRoot "D:/Apache24/htdocs"
+<Directory "D:/Apache24/htdocs">
+~~~~
+将其中的路径替换为你想要的发布路径
+ ~~~~
+DocumentRoot “D:/www”
+<Directory “D:/www”>
+~~~~
+ 这样就更改了网站根目录到 D:/www 下
+
+
+
+##安装 PHP 5.5
+
+下载安装包，选择 [VC11 x64 Thread Safe ](http://windows.php.net/download/) （VC11线程安全版。Thread Safe为安全线程，与Apache搭配环境；Non Thread Safe为非安全线程，主要与IIS搭配环境）
+
+将下载的压缩包解压到 D:/php ，  复制该目录下的 php.ini-production ，将复制后的文件重命名为`php.ini`，打开文件修改：
+
+配置扩展库的路径， 查找 extension_dir = "./"，修改为
+~~~~
+extension_dir = “D:\php\ext”
+~~~~
+添加扩展，去掉如下语句前的分号
+~~~~
+extension=PHP_MySQL.dll    ;配置MySQL模块
+extension=PHP_mysqli.dll
+~~~~
+
+*  需要添加扩展则去掉相应 extension 语句前的分号，然后重新启动Apache
+
+
+
+##配置Apache加载PHP
+
+打开Apached的安装目录，D:\Apache24\conf\extra，新建一个名为`httpd-php5.conf`的文本文件，打开添加以下内容：
+~~~~
+LoadModule php5_module "D:\php\php5apache2_2.dll"
+AddType application/x-httpd-php .php
+AddType application/x-httpd-php-source .phps
+DirectoryIndex index.php
+PHPIniDir "D:\php"
+~~~~
+打开D:\Apache24\conf\httpd.conf，在文件末尾添加一行：
+~~~~
+Include conf/extra/httpd-php5.conf
+~~~~
+
+重启Apache服务，打开目录Apache24\htdocs，删除文件：index.html，新建文件：index.php，输入内容：
+~~~~{php}
+<?php phpinfo(); ?>
+~~~~
+
+在浏览器地址栏输入localhost，如果显示了PHP信息则配置成功。
+
+* Apache服务开启|重启|关闭
+ ~~~~
+net start|restart|stop Apache2.4
+~~~~
+
+
+
+##MySQL
+
+
+<!-- markdown end -->
+
+<!-- markdown end -->
+</div>
+<div class="entry" id="main">
+<!-- content -->
+
+<!-- content end -->
+</div>
+<br>
+<br>
+    <div id="disqus_thread"></div>
+	<div class="footer">
+		<p>© Copyright 2014 by isnowfy, Designed by isnowfy</p>
+	</div>
+</div>
+<script src="main.js"></script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ["\\(", "\\)"]], processEscapes: true}});
+</script>
+<script id="content" type="text/mustache">
+    <h1>{{title}}</h1>
+    <div class="tag">
+    {{date}}
+    {{#tags}}
+    <a href="/#/tag/{{name}}">#{{name}}</a>
+    {{/tags}}
+    </div>
+</script>
+<script id="pagesTemplate" type="text/mustache">
+    {{#pages}}
+    <li>
+        <a href="{{path}}">{{title}}</a>
+    </li>
+    {{/pages}}
+</script>
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: "main.json",
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+            $("#title").html(data.name);
+            var pagesTemplate = Hogan.compile($("#pagesTemplate").html());
+            var pagesHtml = pagesTemplate.render({"pages": data.pages});
+            $("#pages").append(pagesHtml);
+            //path
+            var path = "python.html";
+            //path end
+            var now = 0;
+            for (var i = 0; i < data.posts.length; ++i)
+                if (path == data.posts[i].path)
+                    now = i;
+            var post = data.posts[now];
+            var tmp = post.tags.split(" ");
+            var tags = [];
+            for (var i = 0; i < tmp.length; ++i)
+                if (tmp[i].length > 0)
+                    tags.push({"name": tmp[i]});
+            var contentTemplate = Hogan.compile($("#content").html());
+            var contentHtml = contentTemplate.render({"title": post.title, "tags": tags, "date": post.date});
+            $("#main").prepend(contentHtml);
+            if (data.disqus_shortname.length > 0) {
+                var disqus_shortname = data.disqus_shortname;
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            }
+        }
+    });
+});
+</script>
+</body>
+</html>

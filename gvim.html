@@ -27,7 +27,7 @@
 <!-- markdown -->
 Vi  内建于所有 Unix Like 系统上的文本编辑器；Vim 称为进阶版 Vi，是常用于Linux系统下的一款功能强大的程序编辑器；gVim 是 Vim 的 GUI 版本，带有标准的 windows 风格的图形界面，所以叫g(Graphical)Vim，其指令和用法与 Vim 都完全相同。
 
-接下来将详细的讲述 Windows 7 系统 gVim 的安装 ， 以及 Git，Pathogen 和 plugins的安装
+接下来将详细的讲述 Windows 7 系统 gVim 的安装 ， 以及 Git，Pathogen 和 plugins的安装：
 
 ##安装步奏：
 
@@ -40,7 +40,7 @@ Vi  内建于所有 Unix Like 系统上的文本编辑器；Vim 称为进阶版 
 官网上下载 Windows 版本的安装文件 [gvim7*.exe](http://www.vim.org/download.php)，下载后，你可以安装在默认的 C:\Program Files (x86) 目录下，也可以安装在你的用户目录下 C:\
 Users\Admin。
 
-安装过程当中，在 Setup：Installation Options 界面，选择安装类型 “Full”，而不是默认的 "Typical"。
+* 安装过程当中，在 Setup：Installation Options 界面，选择安装类型 “Full”，而不是默认的 "Typical"。
 
 安装完成之后，我们来修改点东西。
 
@@ -61,17 +61,60 @@ Users\Admin。
 Git 作为一个版本控制系统，程序员们可以在上面分享自己的代码，同样，我们也可以在上面获取代码。
 Pathogen 使得在Vim上安装、卸载插件变得超级简单，Vim 插件以及其相关文件分布的比较混乱，Pathogen 用来管这些插件。
 
-官网下载 [git](http://git-scm.com/downloads) 的 Windows 版本然后安装（http://git-scm.com/downloads）。
+官网下载 [git](http://git-scm.com/downloads) 的 Windows 版本然后安装（http://git-scm.com/downloads）。安装过程中要注意两个问题：
 
+* 在“Select Components” 界面，勾选 “Use a TrueType font in all console windows (not only for Git Bash)”
 
+*  在 “Adjusting your PATH environment” 界面，选择 “Run Git from the Windows Command Prompt”
 
+安装后打开命令行输入"git --version"，查看输出，Git 安装正确的话会出现类似如下的信息：
+~~~~
+C:\Users\***>git --version
+git version 1.9.5msysgit.1
+~~~~
+
+安装 Pathogen 之前，我们先[安装 Curl](https://github.com/gmarik/Vundle.vim/wiki/Vundle-for-Windows)
+：新建文件 curl.cmd，在文件中写入如下内容：
+~~~~
+@rem Do not use "echo off" to not affect any child calls.
+@setlocal
+
+@rem Get the abolute path to the parent directory, which is assumed to be the
+@rem Git installation root.
+@for /F "delims=" %%I in ("%~dp0..") do @set git_install_root=%%~fI
+@set PATH=%git_install_root%\bin;%git_install_root%\mingw\bin;%PATH%
+
+@if not exist "%HOME%" @set HOME=%HOMEDRIVE%%HOMEPATH%
+@if not exist "%HOME%" @set HOME=%USERPROFILE%
+
+@curl.exe %*
+~~~~
+
+保存文件后将其复制至C:\Program Files (x86)\Git\cmd\curl.cmd，这里Git 的安装目录是C:\Program Files (x86)\Git。然后验证安装是否成功，命令行下运行"curl --version"后得到信息如下则安装成功：
+~~~~
+C:\Users\***>curl --version
+curl 7.41.1 (i686-pc-mingw32) libcurl/7.41.1 OpenSSL/0.9.8k zlib/1.2.8
+Protocols: dict file ftp ftps http https imap imaps ldap ldaps pop3 pop3s rtsp smtp smtps telnet tftp
+Features: Largefile NTLM SSL SSPI libz
+~~~~
+
+命令行下 cd 进入 autoload 文件夹，运行 Curl 命令如下：
+
+~~~~
+C:\Program Files (x86)\Vim\vimfiles\autoload>curl -LSso pathogen.vim https://tpo.pe/pathogen.vim
+~~~~
+安装之后 autoload 文件夹内会增添一个文件 pathogen.vim。以上，Pathogen 安装完成。
+
+##在 _vimrc 文件中增加设置
+
+首先，为 _vimrc 保存一份备份，重命名为 'vimrc_backup'
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
 <!-- content -->
 <p>Vi  内建于所有 Unix Like 系统上的文本编辑器；Vim 称为进阶版 Vi，是常用于Linux系统下的一款功能强大的程序编辑器；gVim 是 Vim 的 GUI 版本，带有标准的 windows 风格的图形界面，所以叫g(Graphical)Vim，其指令和用法与 Vim 都完全相同。</p>
 
-<p>接下来将详细的讲述 Windows 7 系统 gVim 的安装 ， 以及 Git，Pathogen 和 plugins的安装</p>
+<p>接下来将详细的讲述 Windows 7 系统 gVim 的安装 ， 以及 Git，Pathogen 和 plugins的安装：</p>
 
 <h2 id="">安装步奏：</h2>
 
@@ -86,7 +129,9 @@ Pathogen 使得在Vim上安装、卸载插件变得超级简单，Vim 插件以�
 <p>官网上下载 Windows 版本的安装文件 <a href="http://www.vim.org/download.php">gvim7*.exe</a>，下载后，你可以安装在默认的 C:\Program Files (x86) 目录下，也可以安装在你的用户目录下 C:\
 Users\Admin。</p>
 
-<p>安装过程当中，在 Setup：Installation Options 界面，选择安装类型 “Full”，而不是默认的 "Typical"。</p>
+<ul>
+<li>安装过程当中，在 Setup：Installation Options 界面，选择安装类型 “Full”，而不是默认的 "Typical"。</li>
+</ul>
 
 <p>安装完成之后，我们来修改点东西。</p>
 
@@ -109,7 +154,52 @@ Users\Admin。</p>
 <p>Git 作为一个版本控制系统，程序员们可以在上面分享自己的代码，同样，我们也可以在上面获取代码。
 Pathogen 使得在Vim上安装、卸载插件变得超级简单，Vim 插件以及其相关文件分布的比较混乱，Pathogen 用来管这些插件。</p>
 
-<p>官网下载 <a href="http://git-scm.com/downloads">git</a> 的 Windows 版本然后安装（http://git-scm.com/downloads）。</p>
+<p>官网下载 <a href="http://git-scm.com/downloads">git</a> 的 Windows 版本然后安装（http://git-scm.com/downloads）。安装过程中要注意两个问题：</p>
+
+<ul>
+<li><p>在“Select Components” 界面，勾选 “Use a TrueType font in all console windows (not only for Git Bash)”</p></li>
+<li><p>在 “Adjusting your PATH environment” 界面，选择 “Run Git from the Windows Command Prompt”</p></li>
+</ul>
+
+<p>安装后打开命令行输入"git --version"，查看输出，Git 安装正确的话会出现类似如下的信息：</p>
+
+<pre><code>C:\Users\***&gt;git --version
+git version 1.9.5msysgit.1
+</code></pre>
+
+<p>安装 Pathogen 之前，我们先<a href="https://github.com/gmarik/Vundle.vim/wiki/Vundle-for-Windows">安装 Curl</a>
+：新建文件 curl.cmd，在文件中写入如下内容：</p>
+
+<pre><code>@rem Do not use "echo off" to not affect any child calls.
+@setlocal
+
+@rem Get the abolute path to the parent directory, which is assumed to be the
+@rem Git installation root.
+@for /F "delims=" %%I in ("%~dp0..") do @set git_install_root=%%~fI
+@set PATH=%git_install_root%\bin;%git_install_root%\mingw\bin;%PATH%
+
+@if not exist "%HOME%" @set HOME=%HOMEDRIVE%%HOMEPATH%
+@if not exist "%HOME%" @set HOME=%USERPROFILE%
+
+@curl.exe %*
+</code></pre>
+
+<p>保存文件后将其复制至C:\Program Files (x86)\Git\cmd\curl.cmd，这里Git 的安装目录是C:\Program Files (x86)\Git。然后验证安装是否成功，命令行下运行"curl --version"后得到信息如下则安装成功：</p>
+
+<pre><code>C:\Users\***&gt;curl --version
+curl 7.41.1 (i686-pc-mingw32) libcurl/7.41.1 OpenSSL/0.9.8k zlib/1.2.8
+Protocols: dict file ftp ftps http https imap imaps ldap ldaps pop3 pop3s rtsp smtp smtps telnet tftp
+Features: Largefile NTLM SSL SSPI libz
+</code></pre>
+
+<p>命令行下 cd 进入 autoload 文件夹，运行 Curl 命令如下：</p>
+
+<p></p><pre><code>C:\Program Files (x86)\Vim\vimfiles\autoload&gt;curl -LSso pathogen.vim https://tpo.pe/pathogen.vim
+</code></pre>安装之后 autoload 文件夹内会增添一个文件 pathogen.vim。以上，Pathogen 安装完成。<p></p>
+
+<h2 id="_vimrc">在 _vimrc 文件中增加设置</h2>
+
+<p>首先，为 <em>vimrc 保存一份备份，重命名为 'vimrc</em>backup'</p>
 <!-- content end -->
 </div>
 <br>

@@ -1,0 +1,332 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="Keywords" content="blog"/>
+    <meta name="Description" content="blog"/>
+    <title>Simple</title>
+    <link rel="shortcut icon" href="/static/favicon.png"/>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<body>
+<div class="main">
+    <div class="header">
+    	<ul id="pages">
+            <li><a href="/">home</a></li>
+            <li><a href="/#/tags">tags</a></li>
+            <li><a href="/#/archive">archive</a></li>
+    	</ul>
+    </div>
+	<div class="wrap-header">
+	<h1>
+    <a href="/" id="title"></a>
+	</h1>
+	</div>
+<div id="md" style="display: none;">
+<!-- markdown -->
+<!-- markdown -->
+##二叉树遍历操作：递归与非递归
+~~~~{c}
+struct BinaryTreeNode
+{
+	int m_nValue;
+	BinaryTreeNode* m_pLeft;
+	BinaryTreeNode* m_pRight;
+};
+~~~~
+
+##前序遍历
+~~~~{c}
+void preOrder(BinaryTreeNode* pRoot)
+{
+	if(pRoot == NULL)
+		return;
+	Visit(pRoot);
+	preOrder(pRoot->m_pLeft);
+	preOrder(pRoot->m_pRight);	
+}
+
+void preOrder2(BinaryTreeNode* pRoot)
+{
+	stack<BinaryTreeNode*> s;
+	BinaryTreeNode* pCurrent = pRoot;
+	while(pCurrent != NULL || !s.empty())
+	{
+		while(pCurrent != NULL)
+		{
+			Visit(pCurrent);
+			s.push(pCurrent);
+			pCurrent = pCurrent->m_pLeft;
+		}
+		if(!s.empty())
+		{
+			pCurrent = s.top();
+			s.pop();
+			pCurrent = pCurrent->m_pRight;
+		}
+	}
+}
+~~~~
+
+##中序遍历
+~~~~{c}
+void inOrder(BinaryTreeNode* pRoot)
+{
+	if(pRoot == NULL)
+		return;
+	inOrder(pRoot->m_pLeft);
+	Visit(pRoot);
+	inOrder(pRoot->m_pRight);
+}
+
+void inOrder2(BinaryTreeNode* pRoot)
+{
+	stack<BinaryTreeNode*> s;
+	BinaryTreeNode* pCurrent = pRoot;
+	while(pCurrent != NULL || !s.empty())
+	{
+		while(pCurrent != NULL)
+		{
+			s.push(pCurrent);
+			pCurrent = pCurrent->m_pLeft;
+		}
+		if(!s.empty())
+		{
+			pCurrent = s.top();
+			Visit(pCurrent);
+			s.pop();
+			pCurrent = pCurrent->m_pRight;
+		}
+	}
+}
+~~~~
+
+##后序遍历
+~~~~{c}
+void postOrder(BinaryTreeNode* pRoot)
+{
+	if(pRoot == NULL)
+		return;
+	postOrder(pRoot->m_pLeft);
+	postOrder(pRoot->m_pRight);
+	Visit(pRoot);
+}
+
+void postOrder2(BinaryTreeNode* pRoot)
+{
+	stack<BinaryTreeNode*> s;
+	BinaryTreeNode* pCurrent;
+	BinaryTreeNode* pPrevious = NULL;
+	s.push(pRoot);
+	while(!s.empty())
+	{
+		pCurrent = s.top();
+		if((pCurrent->m_pLeft == NULL && pCurrent->m_pRight == m_pRight) ||
+			(pPrevious != NULL && (pPrevious == pCurrent->m_pLeft || pPrevious == pCurrent->m_pRight)))
+		{
+			Visit(pCurrent);
+			s.pop();
+			pPrevious = pCurrent;
+		}
+		else
+		{
+			if(pCurrent->m_pRight != NULL)
+				s.push(pCurrent->m_pRight);
+			if(pCurrent->m_pLeft != NULL)
+				s.push(pCurrent->m_pLeft);
+		}
+	}
+}
+~~~~
+<!-- markdown end -->
+<!-- markdown end -->
+</div>
+<div class="entry" id="main">
+<!-- content -->
+<!-- markdown -->
+
+<h2 id="">二叉树遍历操作：递归与非递归</h2>
+
+<pre class=" language-c"><code class=" language-c"><span class="token keyword">struct</span> BinaryTreeNode
+<span class="token punctuation">{</span>
+    <span class="token keyword">int</span> m_nValue<span class="token punctuation">;</span>
+    BinaryTreeNode<span class="token operator">*</span> m_pLeft<span class="token punctuation">;</span>
+    BinaryTreeNode<span class="token operator">*</span> m_pRight<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre>
+
+<h2 id="">前序遍历</h2>
+
+<pre class=" language-c"><code class=" language-c"><span class="token keyword">void</span> <span class="token function">preOrder<span class="token punctuation">(</span></span>BinaryTreeNode<span class="token operator">*</span> pRoot<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>pRoot <span class="token operator">==</span> NULL<span class="token punctuation">)</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token function">Visit<span class="token punctuation">(</span></span>pRoot<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">preOrder<span class="token punctuation">(</span></span>pRoot<span class="token operator">-</span>&gt;m_pLeft<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">preOrder<span class="token punctuation">(</span></span>pRoot<span class="token operator">-</span>&gt;m_pRight<span class="token punctuation">)</span><span class="token punctuation">;</span>   
+<span class="token punctuation">}</span>
+
+<span class="token keyword">void</span> <span class="token function">preOrder2<span class="token punctuation">(</span></span>BinaryTreeNode<span class="token operator">*</span> pRoot<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    stack<span class="token operator">&lt;</span>BinaryTreeNode<span class="token operator">*</span>&gt; s<span class="token punctuation">;</span>
+    BinaryTreeNode<span class="token operator">*</span> pCurrent <span class="token operator">=</span> pRoot<span class="token punctuation">;</span>
+    <span class="token keyword">while</span><span class="token punctuation">(</span>pCurrent <span class="token operator">!=</span> NULL <span class="token operator">||</span> <span class="token operator">!</span>s<span class="token punctuation">.</span><span class="token function">empty<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">while</span><span class="token punctuation">(</span>pCurrent <span class="token operator">!=</span> NULL<span class="token punctuation">)</span>
+        <span class="token punctuation">{</span>
+            <span class="token function">Visit<span class="token punctuation">(</span></span>pCurrent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            s<span class="token punctuation">.</span><span class="token function">push<span class="token punctuation">(</span></span>pCurrent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            pCurrent <span class="token operator">=</span> pCurrent<span class="token operator">-</span>&gt;m_pLeft<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span>s<span class="token punctuation">.</span><span class="token function">empty<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">{</span>
+            pCurrent <span class="token operator">=</span> s<span class="token punctuation">.</span><span class="token function">top<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            s<span class="token punctuation">.</span><span class="token function">pop<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            pCurrent <span class="token operator">=</span> pCurrent<span class="token operator">-</span>&gt;m_pRight<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+
+<h2 id="">中序遍历</h2>
+
+<pre class=" language-c"><code class=" language-c"><span class="token keyword">void</span> <span class="token function">inOrder<span class="token punctuation">(</span></span>BinaryTreeNode<span class="token operator">*</span> pRoot<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>pRoot <span class="token operator">==</span> NULL<span class="token punctuation">)</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token function">inOrder<span class="token punctuation">(</span></span>pRoot<span class="token operator">-</span>&gt;m_pLeft<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">Visit<span class="token punctuation">(</span></span>pRoot<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">inOrder<span class="token punctuation">(</span></span>pRoot<span class="token operator">-</span>&gt;m_pRight<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">void</span> <span class="token function">inOrder2<span class="token punctuation">(</span></span>BinaryTreeNode<span class="token operator">*</span> pRoot<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    stack<span class="token operator">&lt;</span>BinaryTreeNode<span class="token operator">*</span>&gt; s<span class="token punctuation">;</span>
+    BinaryTreeNode<span class="token operator">*</span> pCurrent <span class="token operator">=</span> pRoot<span class="token punctuation">;</span>
+    <span class="token keyword">while</span><span class="token punctuation">(</span>pCurrent <span class="token operator">!=</span> NULL <span class="token operator">||</span> <span class="token operator">!</span>s<span class="token punctuation">.</span><span class="token function">empty<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">while</span><span class="token punctuation">(</span>pCurrent <span class="token operator">!=</span> NULL<span class="token punctuation">)</span>
+        <span class="token punctuation">{</span>
+            s<span class="token punctuation">.</span><span class="token function">push<span class="token punctuation">(</span></span>pCurrent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            pCurrent <span class="token operator">=</span> pCurrent<span class="token operator">-</span>&gt;m_pLeft<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">!</span>s<span class="token punctuation">.</span><span class="token function">empty<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">{</span>
+            pCurrent <span class="token operator">=</span> s<span class="token punctuation">.</span><span class="token function">top<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">Visit<span class="token punctuation">(</span></span>pCurrent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            s<span class="token punctuation">.</span><span class="token function">pop<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            pCurrent <span class="token operator">=</span> pCurrent<span class="token operator">-</span>&gt;m_pRight<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+
+<h2 id="">后序遍历</h2>
+
+<p></p><pre class=" language-c"><code class=" language-c"><span class="token keyword">void</span> <span class="token function">postOrder<span class="token punctuation">(</span></span>BinaryTreeNode<span class="token operator">*</span> pRoot<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>pRoot <span class="token operator">==</span> NULL<span class="token punctuation">)</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token function">postOrder<span class="token punctuation">(</span></span>pRoot<span class="token operator">-</span>&gt;mpLeft<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">postOrder<span class="token punctuation">(</span></span>pRoot<span class="token operator">-</span>&gt;mpRight<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">Visit<span class="token punctuation">(</span></span>pRoot<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+</code><p><code class=" language-c"><span class="token keyword">void</span> <span class="token function">postOrder2<span class="token punctuation">(</span></span>BinaryTreeNode<span class="token operator">*</span> pRoot<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    stack<span class="token operator">&lt;</span>BinaryTreeNode&gt; s<span class="token punctuation">;</span>
+    BinaryTreeNode pCurrent<span class="token punctuation">;</span>
+    BinaryTreeNode<span class="token operator">*</span> pPrevious <span class="token operator">=</span> NULL<span class="token punctuation">;</span>
+    s<span class="token punctuation">.</span><span class="token function">push<span class="token punctuation">(</span></span>pRoot<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span><span class="token punctuation">(</span><span class="token operator">!</span>s<span class="token punctuation">.</span><span class="token function">empty<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        pCurrent <span class="token operator">=</span> s<span class="token punctuation">.</span><span class="token function">top<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token punctuation">(</span>pCurrent<span class="token operator">-</span>&gt;mpLeft <span class="token operator">==</span> NULL <span class="token operator">&amp;&amp;</span> pCurrent<span class="token operator">-</span>&gt;mpRight <span class="token operator">==</span> mpRight<span class="token punctuation">)</span> <span class="token operator">||</span>
+            <span class="token punctuation">(</span>pPrevious <span class="token operator">!=</span> NULL <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>pPrevious <span class="token operator">==</span> pCurrent<span class="token operator">-</span>&gt;mpLeft <span class="token operator">||</span> pPrevious <span class="token operator">==</span> pCurrent<span class="token operator">-</span>&gt;mpRight<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        <span class="token punctuation">{</span>
+            <span class="token function">Visit<span class="token punctuation">(</span></span>pCurrent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            s<span class="token punctuation">.</span><span class="token function">pop<span class="token punctuation">(</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            pPrevious <span class="token operator">=</span> pCurrent<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">else</span>
+        <span class="token punctuation">{</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span>pCurrent<span class="token operator">-</span>&gt;mpRight <span class="token operator">!=</span> NULL<span class="token punctuation">)</span>
+                s<span class="token punctuation">.</span><span class="token function">push<span class="token punctuation">(</span></span>pCurrent<span class="token operator">-</span>&gt;mpRight<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span>pCurrent<span class="token operator">-</span>&gt;mpLeft <span class="token operator">!=</span> NULL<span class="token punctuation">)</span>
+                s<span class="token punctuation">.</span><span class="token function">push<span class="token punctuation">(</span></span>pCurrent<span class="token operator">-</span>&gt;m_pLeft<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></p></pre><!-- markdown end --><p></p>
+<!-- content end -->
+</div>
+<br>
+<br>
+    <div id="disqus_thread"></div>
+	<div class="footer">
+		<p>© Copyright 2014 by isnowfy, Designed by isnowfy</p>
+	</div>
+</div>
+<script src="main.js"></script>
+<script id="content" type="text/mustache">
+    <h1>{{title}}</h1>
+    <div class="tag">
+    {{date}}
+    {{#tags}}
+    <a href="/#/tag/{{name}}">#{{name}}</a>
+    {{/tags}}
+    </div>
+</script>
+<script id="pagesTemplate" type="text/mustache">
+    {{#pages}}
+    <li>
+        <a href="{{path}}">{{title}}</a>
+    </li>
+    {{/pages}}
+</script>
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: "main.json",
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+            $("#title").html(data.name);
+            var pagesTemplate = Hogan.compile($("#pagesTemplate").html());
+            var pagesHtml = pagesTemplate.render({"pages": data.pages});
+            $("#pages").append(pagesHtml);
+            //path
+            var path = "BinaryTree";
+            //path end
+            var now = 0;
+            for (var i = 0; i < data.posts.length; ++i)
+                if (path == data.posts[i].path)
+                    now = i;
+            var post = data.posts[now];
+            var tmp = post.tags.split(" ");
+            var tags = [];
+            for (var i = 0; i < tmp.length; ++i)
+                if (tmp[i].length > 0)
+                    tags.push({"name": tmp[i]});
+            var contentTemplate = Hogan.compile($("#content").html());
+            var contentHtml = contentTemplate.render({"title": post.title, "tags": tags, "date": post.date});
+            $("#main").prepend(contentHtml);
+            if (data.disqus_shortname.length > 0) {
+                var disqus_shortname = data.disqus_shortname;
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            }
+        }
+    });
+});
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ["\\(", "\\)"]], processEscapes: true}});
+</script>
+</body>
+</html>
